@@ -111,7 +111,7 @@ function ScoreBoard() {
                         {e.name} {e.surname}
                       </td>
                       <td className={style.td}>{formatTime(e.score)}</td>
-                      <td className={tdIcon}>
+                      <td className={style.tdIcon}>
                         <div className={style.iconDiv}>
                           <MdTimer
                             onClick={() => handleTimer(e.id)}
@@ -121,7 +121,7 @@ function ScoreBoard() {
                           />
                         </div>
                       </td>
-                      <td className={tdIcon}>
+                      <td className={style.tdIcon}>
                         <div className={style.iconDiv}>
                           <MdDelete
                             onClick={() => deleteUser(e.id)}

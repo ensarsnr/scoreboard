@@ -6,12 +6,12 @@ import {getFirestore} from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: ""
+  apiKey: "AIzaSyCBq1iCNQW131_ep9-4yzZKn3wSEufTomI",
+  authDomain: "rodeo-app-28d2f.firebaseapp.com",
+  projectId: "rodeo-app-28d2f",
+  storageBucket: "rodeo-app-28d2f.appspot.com",
+  messagingSenderId: "521310414828",
+  appId: "1:521310414828:web:5551276580ff68269702c9"
 };
 
 // Initialize Firebase
