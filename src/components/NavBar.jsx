@@ -24,14 +24,14 @@ function NavBar() {
     <>
       <Navbar className="bg-white">
         <Container className="mt-2">
-          <Navbar.Brand href="#home">
-            <Image style={{ width: "200px" }} src={sunny} />
+          <Navbar.Brand>
+            <Image style={{ width: "250px" }} className="mt-3" src={sunny} />
           </Navbar.Brand>
           <Navbar.Toggle />
           <Navbar.Collapse className="justify-content-end">
             <Button onClick={handleClick} variant="success">
               <div className="flex justify-between">
-                <BsPersonAdd className="mt-1 mr-2" />
+                <BsPersonAdd className=" mt-1 mr-2" />
                 Yeni Yarışmacı Ekle
               </div>
             </Button>
@@ -46,7 +46,7 @@ function NavBar() {
         dialogClassName="modal-position"
       >
         <Modal.Header closeButton>
-          <Modal.Title>Yeni Yarışmacı</Modal.Title>
+          <Modal.Title ><h3 className="text-blue-500">Yeni Yarışmacı</h3></Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <FormComp />

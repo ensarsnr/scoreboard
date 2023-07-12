@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
-import { collection, doc, updateDoc } from 'firebase/firestore';
+import { collection, doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
 
 function Timer({ index }) {
   const [time, setTime] = useState(0);
   const [timerId, setTimerId] = useState(null);
+  const [showButton, setShowButton] = useState(false);
 
   const startTimer = () => {
     if (timerId) return;
@@ -13,31 +14,33 @@ function Timer({ index }) {
       setTime((prevTime) => prevTime + 10);
     }, 10);
     setTimerId(id);
+    setShowButton(true);
   };
 
   const stopTimer = async () => {
     if (!timerId) return;
     clearInterval(timerId);
     setTimerId(null);
-  
+    setShowButton(false);
+
     // Firestore'da kullanıcının skorunu güncelle
     const userId = index; //Kullanıcının kimliği burada olacak. Ona göre güncelleme oluyor.
     await updateScore(userId, time);
-  
+
     // console.log(timerId);
   };
   const updateScore = async (userId, newScore) => {
     try {
-      const userDoc = doc(collection(db, 'users'), userId);
+      const userDoc = doc(collection(db, "users"), userId);
       await updateDoc(userDoc, {
-        score: newScore
+        score: newScore,
       });
-    //   console.log('Skor güncellendi.');
+      //   console.log('Skor güncellendi.');
     } catch (error) {
-    //   console.error('Skor güncellenirken bir hata oluştu:', error);
+      //   console.error('Skor güncellenirken bir hata oluştu:', error);
     }
   };
-  
+
   useEffect(() => {
     return () => {
       if (timerId) {
@@ -57,17 +60,21 @@ function Timer({ index }) {
   };
 
   return (
-    <div className="w-full">
-      <Modal.Body className="w-full">
-        <div className="text-center text-7xl">{formatTime(time)}</div>
+    <div>
+      <Modal.Body>
+        <div className="text-center text-8xl">{formatTime(time)}</div>
       </Modal.Body>
       <Modal.Footer className="flex justify-between">
-        <Button onClick={startTimer} variant="success">
-          Başlat
-        </Button>
-        <Button onClick={stopTimer} variant="danger">
-          Dur
-        </Button>
+        {!showButton && (
+          <Button className="w-25" onClick={startTimer} variant="success">
+            Başlat
+          </Button>
+        )}
+        {showButton && (
+          <Button className="w-25" onClick={stopTimer} variant="danger">
+            Dur
+          </Button>
+        )}
       </Modal.Footer>
     </div>
   );

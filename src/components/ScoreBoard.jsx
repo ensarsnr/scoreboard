@@ -10,19 +10,20 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import Timer from "./Timer";
+import {GiTrophyCup} from "react-icons/gi"
 
 const style = {
-  th: `px-6 py-3 text-xs font-bold text-center text-gray-500 uppercase`,
+  th: `px-6 py-3 2xl:text-xl lg:text-xs font-bold text-center text-gray-500 uppercase`,
   container: `flex h-screen flex-col mt-5`,
   row: `overflow-x-auto flex-grow`,
   col: `p-1.5 w-full inline-block align-middle`,
   tableBorder: `overflow-hidden border rounded-lg`,
   table: `w-full min-w-full divide-y divide-gray-200`,
   tbody: `divide-y divide-gray-200`,
-  tdIndex: `py-3 pl-4 text-center`,
-  td: `px-6 py-4 text-5xl font-medium text-center text-gray-800 whitespace-nowrap`,
-  tdIcon: `px-6 py-4 text-5xl font-medium text-center whitespace-nowrap`,
-  iconDiv: `px-6 py-4 text-5xl font-medium text-center whitespace-nowrap`,
+  tdIndex: `py-3 pl-4 text-gray-500 text-center`,
+  td: `px-6 py-4 2xl:text-7xl xl:text-4xl font-medium text-center text-gray-700 whitespace-nowrap`,
+  tdIcon: `px-6 py-4 text-5xl font-medium whitespace-nowrap`,
+  iconDiv: `px-6 py-4 text-center mx-auto`
 };
 
 function ScoreBoard() {
@@ -101,23 +102,23 @@ function ScoreBoard() {
                 </thead>
                 <tbody className={style.tbody}>
                   {users.map((e, index) => (
-                    <tr key={index}>
+                    <tr key={index} > {/* className={index === 0 ? "bg-gold" : (index === 1 ? "bg-silver" : (index === 2 ? "bg-bronze" : ""))} */}
                       <td className={style.tdIndex}>
-                        <div className="text-5xl">
-                          <div className="mr-3">{index + 1}</div>
+                        <div className="2xl:text-8xl xl:text-5xl">
+                          <div className="m-auto">{index ===  0 ? <GiTrophyCup size={100} className="m-auto" color="#FFD700" />: index + 1}</div>
                         </div>
                       </td>
-                      <td className={style.td}>
+                      <td className={style.td}>    
                         {e.name} {e.surname}
                       </td>
                       <td className={style.td}>{formatTime(e.score)}</td>
                       <td className={style.tdIcon}>
-                        <div className={style.iconDiv}>
+                      <div className={style.iconDiv}>
                           <MdTimer
                             onClick={() => handleTimer(e.id)}
                             color="green"
-                            size={40}
-                            className="cursor-pointer"
+                            size={70}
+                            className="cursor-pointer m-auto"
                           />
                         </div>
                       </td>
@@ -125,9 +126,9 @@ function ScoreBoard() {
                         <div className={style.iconDiv}>
                           <MdDelete
                             onClick={() => deleteUser(e.id)}
-                            color="red"
-                            size={40}
-                            className="cursor-pointer"
+                            color="#ff0000"
+                            size={70}
+                            className="cursor-pointer m-auto"
                           />
                         </div>
                       </td>
@@ -146,7 +147,7 @@ function ScoreBoard() {
         dialogClassName="modal-position"
       >
         <Modal.Header closeButton>
-          <Modal.Title className="text-6xl">Zamanlayıcı</Modal.Title>
+          <Modal.Title className="text-6xl ">Kronometre</Modal.Title>
         </Modal.Header>
         {timer && <Timer index={selectedPlayerIndex} />}
       </Modal>

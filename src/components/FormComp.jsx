@@ -11,14 +11,21 @@ function FormComp() {
   // Hooks
   const [name, setName] = useState("")
   const [surname, setSurname] = useState("")
-
+  const [err, setErr] = useState(false);
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(name === "" || surname === "") {
+      setErr(true);
+    }
+    else {
+      setErr(false);
      await addDoc(collection(db, "users"), {
       name: name,
       surname: surname,
       score: 0,
     })
+    }
     // console.log(docRef);
     setName("");
     setSurname("");
@@ -30,6 +37,7 @@ function FormComp() {
     <div className="m-auto">
       <form onSubmit={handleSubmit}>
         <input
+        // ref={input => input && input.focus()}
           value={name}
           onChange={(e) => setName(e.target.value)}
           className={style.input}
@@ -44,6 +52,7 @@ function FormComp() {
         <button  className={style.button} type="submit">
           Ekle
         </button>
+        {err && <p className='mt-2 text-center text-danger'>Alanları doldurunuz</p>}
       </form>
     </div>
   </div>
