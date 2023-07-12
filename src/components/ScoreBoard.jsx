@@ -11,10 +11,18 @@ import {
 import { db } from "../firebase";
 import Timer from "./Timer";
 
-// ####################################################
-// yarın buralara style'ları eklersin düzenlersinn!!!!!
 const style = {
   th: `px-6 py-3 text-xs font-bold text-center text-gray-500 uppercase`,
+  container: `flex h-screen flex-col mt-5`,
+  row: `overflow-x-auto flex-grow`,
+  col: `p-1.5 w-full inline-block align-middle`,
+  tableBorder: `overflow-hidden border rounded-lg`,
+  table: `w-full min-w-full divide-y divide-gray-200`,
+  tbody: `divide-y divide-gray-200`,
+  tdIndex: `py-3 pl-4 text-center`,
+  td: `px-6 py-4 text-5xl font-medium text-center text-gray-800 whitespace-nowrap`,
+  tdIcon: `px-6 py-4 text-5xl font-medium text-center whitespace-nowrap`,
+  iconDiv: `px-6 py-4 text-5xl font-medium text-center whitespace-nowrap`,
 };
 
 function ScoreBoard() {
@@ -39,9 +47,9 @@ function ScoreBoard() {
       querySnapshot.forEach((doc) => {
         users.push({ ...doc.data(), id: doc.id });
       });
-    const sortedUsers = users.sort((a, b) => b.score - a.score);
-       setUsers(sortedUsers);
-    //    console.log(doc.id)
+      const sortedUsers = users.sort((a, b) => b.score - a.score);
+      setUsers(sortedUsers);
+      //    console.log(doc.id)
     });
     return () => unsubcribe();
   }, []);
@@ -67,11 +75,11 @@ function ScoreBoard() {
 
   return (
     <>
-      <div className="flex h-screen flex-col mt-5" style={{ maxHeight: "80vh" }}>
-        <div className="overflow-x-auto flex-grow">
-          <div className="p-1.5 w-full inline-block align-middle">
-            <div className="overflow-hidden border rounded-lg">
-              <table className="w-full min-w-full divide-y divide-gray-200">
+      <div className={style.container} style={{ maxHeight: "80vh" }}>
+        <div className={style.row}>
+          <div className={style.col}>
+            <div className={style.tableBorder}>
+              <table className={style.table}>
                 <thead className="bg-gray-50">
                   <tr>
                     <th scope="col" className={style.th}>
@@ -91,22 +99,20 @@ function ScoreBoard() {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className={style.tbody}>
                   {users.map((e, index) => (
                     <tr key={index}>
-                      <td className="py-3 pl-4 text-center">
+                      <td className={style.tdIndex}>
                         <div className="text-5xl">
                           <div className="mr-3">{index + 1}</div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-5xl font-medium text-center text-gray-800 whitespace-nowrap">
+                      <td className={style.td}>
                         {e.name} {e.surname}
                       </td>
-                      <td className="px-6 py-4 text-5xl font-medium text-center text-gray-800 whitespace-nowrap">
-                        {formatTime(e.score)}
-                      </td>
-                      <td className="px-6 py-4 text-5xl font-medium text-center whitespace-nowrap">
-                        <div className="flex justify-center items-center">
+                      <td className={style.td}>{formatTime(e.score)}</td>
+                      <td className={tdIcon}>
+                        <div className={style.iconDiv}>
                           <MdTimer
                             onClick={() => handleTimer(e.id)}
                             color="green"
@@ -115,8 +121,8 @@ function ScoreBoard() {
                           />
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-5xl font-medium text-center whitespace-nowrap">
-                        <div className="flex justify-center items-center">
+                      <td className={tdIcon}>
+                        <div className={style.iconDiv}>
                           <MdDelete
                             onClick={() => deleteUser(e.id)}
                             color="red"
