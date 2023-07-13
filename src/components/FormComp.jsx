@@ -52,7 +52,7 @@ function FormComp() {
         <button  className={style.button} type="submit">
           Ekle
         </button>
-        {err && <p className='mt-2 text-center text-danger'>Alanları doldurunuz</p>}
+        {err && <p className='mt-2 text-center text-danger'>Alanları boş geçmeyiniz.</p>}
       </form>
     </div>
   </div>

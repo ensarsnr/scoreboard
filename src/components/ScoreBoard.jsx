@@ -41,6 +41,7 @@ function ScoreBoard() {
     }
   };
 
+  // firebase'de ki users koleksiyonumu kontrol eder bir değişiklik olduğunda ise tekrardan listeler.
   useEffect(() => {
     const q = query(collection(db, "users"));
     const unsubcribe = onSnapshot(q, (querySnapshot) => {
@@ -144,10 +145,11 @@ function ScoreBoard() {
         show={timer}
         onHide={closeTimer}
         centered
-        dialogClassName="modal-position"
+        dialogClassName="modal-position modal-wide"
+        size="xl"
       >
         <Modal.Header closeButton>
-          <Modal.Title className="text-6xl ">Kronometre</Modal.Title>
+          <Modal.Title className="text-6xl">Kronometre</Modal.Title>
         </Modal.Header>
         {timer && <Timer index={selectedPlayerIndex} />}
       </Modal>

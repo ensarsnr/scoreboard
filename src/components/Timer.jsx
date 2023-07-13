@@ -62,7 +62,7 @@ function Timer({ index }) {
   return (
     <div>
       <Modal.Body>
-        <div className="text-center text-8xl">{formatTime(time)}</div>
+        <div className="text-center text-9xl">{formatTime(time)}</div>
       </Modal.Body>
       <Modal.Footer className="flex justify-between">
         {!showButton && (
