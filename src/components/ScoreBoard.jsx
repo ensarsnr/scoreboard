@@ -14,7 +14,6 @@ import { GiTrophyCup } from "react-icons/gi";
 import { BsFillArrowRightSquareFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 
-
 // Style
 const style = {
   th: `px-6 py-3 2xl:text-xl lg:text-xs font-bold text-center text-gray-500 uppercase`,
@@ -32,7 +31,6 @@ const style = {
 
 // Component
 function ScoreBoard() {
-
   // Hooks
   const [users, setUsers] = useState([]);
   const [timer, setTimer] = useState(false);
@@ -43,7 +41,6 @@ function ScoreBoard() {
   const [time, setTime] = useState(0);
   const [timerId, setTimerId] = useState(null);
   const [showButton, setShowButton] = useState(false);
-
 
   // Functions
   const startTimer = () => {
@@ -61,13 +58,14 @@ function ScoreBoard() {
     setTimerId(null);
     setShowButton(false);
     setTimer(false);
-  
+
     // Firestore'da kullanıcının skorunu güncelle
     const userId = users[selectedPlayerIndex]?.id;
     await updateScore(userId, time);
-  
+
     setTime(0); // Skoru sıfırla
-  };  const updateScore = async (userId, newScore) => {
+  };
+  const updateScore = async (userId, newScore) => {
     try {
       const userDoc = doc(collection(db, "users"), userId);
       await updateDoc(userDoc, {
@@ -86,7 +84,6 @@ function ScoreBoard() {
       }
     };
   }, [timerId]);
-
 
   // Elemanları silmeye yarayan fonksiyon.
   const deleteUser = async (id) => {
@@ -109,21 +106,21 @@ function ScoreBoard() {
   useEffect(() => {
     const q = query(collection(db, "users"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-    let users = [];
-    querySnapshot.forEach((doc) => {
-    users.push({ ...doc.data(), id: doc.id });
-    });
-    const sortedUsers = users.sort((a, b) => b.score - a.score);
-    const topFiveUsers = sortedUsers.slice(0, 5); // buraları Get the top 5 users
-    setUsers(topFiveUsers); // buraları değişti sadece
-    // console.log(doc.id)
+      let users = [];
+      querySnapshot.forEach((doc) => {
+        users.push({ ...doc.data(), id: doc.id });
+      });
+      const sortedUsers = users.sort((a, b) => b.score - a.score);
+      const topFiveUsers = sortedUsers.slice(0, 5); // buraları Get the top 5 users
+      setUsers(topFiveUsers); // buraları değişti sadece
+      // console.log(doc.id)
     });
     return () => unsubscribe();
-    }, []);
+  }, []);
 
-   const closeTimer = () => {
-     setTimer(false);
-   };
+  const closeTimer = () => {
+    setTimer(false);
+  };
 
   const closeDelete = () => {
     setDeleteClick(false);
@@ -144,14 +141,18 @@ function ScoreBoard() {
     return `${formattedMinutes}:${formattedSeconds}.${formattedMilliseconds}`;
   };
 
-  
-
   return (
     <>
-    {/* Bunlara basarak sayfayı yenilemeden sadce tabloyu yenileyecek. */}
-    {/* rightarrow a basıldığında ekranda 5 ten sonra ki kullanıcılar gözükecek left'e bastığında klasik 1 den sonrası */}
-    <Link to={"second"}><BsFillArrowRightSquareFill  color="gray" className="cursor-pointer float-right mr-16" size={40}/></Link>
-    {/* <BsFillArrowLeftSquareFill   color="gray" className="float-right mr-2" size={40}/> */}
+      {/* Bunlara basarak sayfayı yenilemeden sadce tabloyu yenileyecek. */}
+      {/* rightarrow a basıldığında ekranda 5 ten sonra ki kullanıcılar gözükecek left'e bastığında klasik 1 den sonrası */}
+      <Link to={"second"}>
+        <BsFillArrowRightSquareFill
+          color="gray"
+          className="cursor-pointer float-right mr-16"
+          size={40}
+        />
+      </Link>
+      {/* <BsFillArrowLeftSquareFill   color="gray" className="float-right mr-2" size={40}/> */}
       <div className={style.container} style={{ maxHeight: "80vh" }}>
         <div className={style.row}>
           <div className={style.col}>
@@ -264,33 +265,34 @@ function ScoreBoard() {
         </Modal.Body>
       </Modal>
       <Modal
-  show={timer}
-  onHide={closeTimer}
-  centered
-  dialogClassName="modal-position modal-wide"
-  size="xl"
-  backdrop="static" // Modal dışında tıklama işlemini iptal et
->
-  <Modal.Header closeButton={true}> {/* Çarpıyı gizlemek */}
-    <Modal.Title className="text-6xl">Kronometre</Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-    <div className="text-center text-9xl">{formatTime(time)}</div>
-  </Modal.Body>
-  <Modal.Footer className="flex justify-between">
-    {!showButton && (
-      <Button className="w-25" onClick={startTimer} variant="success">
-        Başlat
-      </Button>
-    )}
-    {showButton && (
-      <Button className="w-25" onClick={stopTimer} variant="danger">
-        Dur
-      </Button>
-    )}
-  </Modal.Footer>
-</Modal>
-
+        show={timer}
+        onHide={closeTimer}
+        centered
+        dialogClassName="modal-position modal-wide"
+        size="xl"
+        backdrop="static" // Modal dışında tıklama işlemini iptal et
+      >
+        <Modal.Header closeButton={true}>
+          {" "}
+          {/* Çarpıyı gizlemek */}
+          <Modal.Title className="text-6xl">Kronometre</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="text-center text-9xl">{formatTime(time)}</div>
+        </Modal.Body>
+        <Modal.Footer className="flex justify-between">
+          {!showButton && (
+            <Button className="w-25" onClick={startTimer} variant="success">
+              Başlat
+            </Button>
+          )}
+          {showButton && (
+            <Button className="w-25" onClick={stopTimer} variant="danger">
+              Dur
+            </Button>
+          )}
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }
