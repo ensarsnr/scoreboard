@@ -23,9 +23,9 @@ function NavBar() {
   return (
     <>
       <Navbar className="bg-white">
-        <Container className="mt-2">
+        <Container fluid className="mt-2">
           <Navbar.Brand>
-            <Image style={{ width: "250px" }} className="mt-3" src={sunny} />
+            <Image style={{ width: "350px" }} className="mt-3" src={sunny} />
           </Navbar.Brand>
           <Navbar.Toggle />
           <Navbar.Collapse className="justify-content-end">

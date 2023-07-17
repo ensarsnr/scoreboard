@@ -10,7 +10,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import Timer from "./Timer";
-import {GiTrophyCup} from "react-icons/gi"
+import { GiTrophyCup } from "react-icons/gi";
 
 const style = {
   th: `px-6 py-3 2xl:text-xl lg:text-xs font-bold text-center text-gray-500 uppercase`,
@@ -23,7 +23,7 @@ const style = {
   tdIndex: `py-3 pl-4 text-gray-500 text-center`,
   td: `px-6 py-4 2xl:text-7xl xl:text-4xl font-medium text-center text-gray-700 whitespace-nowrap`,
   tdIcon: `px-6 py-4 text-5xl font-medium whitespace-nowrap`,
-  iconDiv: `px-6 py-4 text-center mx-auto`
+  iconDiv: `px-6 py-4 text-center mx-auto`,
 };
 
 function ScoreBoard() {
@@ -103,18 +103,42 @@ function ScoreBoard() {
                 </thead>
                 <tbody className={style.tbody}>
                   {users.map((e, index) => (
-                    <tr key={index} > {/* className={index === 0 ? "bg-gold" : (index === 1 ? "bg-silver" : (index === 2 ? "bg-bronze" : ""))} */}
+                    <tr className={index % 2 === 1 ? "bg-gradient-to-bl from-white to-blue-400" : ""} key={index}>
+                      {/* className={index === 0 ? "bg-gold" : (index === 1 ? "bg-silver" : (index === 2 ? "bg-bronze" : ""))} */}
+                      {/* İlk üç kişiye kupa iconu koydum. Gold-Silver-Bronze */}
                       <td className={style.tdIndex}>
                         <div className="2xl:text-8xl xl:text-5xl">
-                          <div className="m-auto">{index ===  0 ? <GiTrophyCup size={100} className="m-auto" color="#FFD700" />: index + 1}</div>
+                          <div className="m-auto">
+                            {index === 0 ? (
+                              <GiTrophyCup
+                                size={100}
+                                className="m-auto"
+                                color="#FFD700"
+                              />
+                            ) : index === 1 ? (
+                              <GiTrophyCup
+                                size={100}
+                                className="m-auto"
+                                color="#C0C0C0"
+                              />
+                            ) : index === 2 ? (
+                              <GiTrophyCup
+                                size={100}
+                                className="m-auto"
+                                color="#CD7F32"
+                              />
+                            ) : (
+                              index + 1
+                            )}
+                          </div>
                         </div>
                       </td>
-                      <td className={style.td}>    
+                      <td className={style.td}>
                         {e.name} {e.surname}
                       </td>
                       <td className={style.td}>{formatTime(e.score)}</td>
                       <td className={style.tdIcon}>
-                      <div className={style.iconDiv}>
+                        <div className={style.iconDiv}>
                           <MdTimer
                             onClick={() => handleTimer(e.id)}
                             color="green"
