@@ -1,6 +1,6 @@
+import NavBar from './NavBar'
 import React, { useEffect, useState } from "react";
 import { MdDelete, MdTimer } from "react-icons/md";
-import { Button, Modal } from "react-bootstrap";
 import {
   collection,
   deleteDoc,
@@ -10,28 +10,26 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
-import { GiTrophyCup } from "react-icons/gi";
-import { BsFillArrowRightSquareFill } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import { Button, Modal } from 'react-bootstrap';
+import { BsFillArrowLeftSquareFill } from 'react-icons/bs';
+import { Link } from 'react-router-dom';
 
-
-// Style
 const style = {
-  th: `px-6 py-3 2xl:text-xl lg:text-xs font-bold text-center text-gray-500 uppercase`,
-  container: `flex h-screen flex-col mt-5`,
-  row: `overflow-x-auto flex-grow`,
-  col: `p-1.5 w-full inline-block align-middle`,
-  tableBorder: `overflow-hidden border rounded-lg`,
-  table: `w-full min-w-full divide-y divide-gray-200`,
-  tbody: `divide-y divide-gray-200`,
-  tdIndex: `py-3 pl-4 text-gray-500 text-center`,
-  td: `px-6 py-4 2xl:text-7xl xl:text-4xl font-medium text-center text-gray-700 whitespace-nowrap`,
-  tdIcon: `px-6 py-4 text-5xl font-medium whitespace-nowrap`,
-  iconDiv: `px-6 py-4 text-center mx-auto`,
-};
+    th: `px-6 py-3 2xl:text-xl lg:text-xs font-bold text-center text-gray-500 uppercase`,
+    container: `flex h-screen flex-col mt-5`,
+    row: `overflow-x-auto flex-grow`,
+    col: `p-1.5 w-full inline-block align-middle`,
+    tableBorder: `overflow-hidden border rounded-lg`,
+    table: `w-full min-w-full divide-y divide-gray-200`,
+    tbody: `divide-y divide-gray-200`,
+    tdIndex: `py-3 pl-4 text-gray-500 text-center`,
+    td: `px-6 py-4 2xl:text-7xl xl:text-4xl font-medium text-center text-gray-700 whitespace-nowrap`,
+    tdIcon: `px-6 py-4 text-5xl font-medium whitespace-nowrap`,
+    iconDiv: `px-6 py-4 text-center mx-auto`,
+  };
 
-// Component
-function ScoreBoard() {
+function SecondPage() {
+
 
   // Hooks
   const [users, setUsers] = useState([]);
@@ -106,24 +104,25 @@ function ScoreBoard() {
   };
 
   // firebase'de ki users koleksiyonumu kontrol eder bir değişiklik olduğunda ise tekrardan listeler.
-  useEffect(() => {
+  
+useEffect(() => {
     const q = query(collection(db, "users"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-    let users = [];
-    querySnapshot.forEach((doc) => {
-    users.push({ ...doc.data(), id: doc.id });
-    });
-    const sortedUsers = users.sort((a, b) => b.score - a.score);
-    const topFiveUsers = sortedUsers.slice(0, 5); // buraları Get the top 5 users
-    setUsers(topFiveUsers); // buraları değişti sadece
-    // console.log(doc.id)
+      let allUsers = [];
+      querySnapshot.forEach((doc) => {
+        allUsers.push({ ...doc.data(), id: doc.id });
+      });
+      const sortedUsers = allUsers.sort((a, b) => b.score - a.score);
+      setUsers(sortedUsers.slice(5)); // Sadece 5'ten sonraki oyuncuları al
     });
     return () => unsubscribe();
-    }, []);
+  }, []);
+  
+  
 
-   const closeTimer = () => {
-     setTimer(false);
-   };
+  const closeTimer = () => {
+    setTimer(false);
+  };
 
   const closeDelete = () => {
     setDeleteClick(false);
@@ -146,13 +145,13 @@ function ScoreBoard() {
 
   
 
+
   return (
     <>
-    {/* Bunlara basarak sayfayı yenilemeden sadce tabloyu yenileyecek. */}
-    {/* rightarrow a basıldığında ekranda 5 ten sonra ki kullanıcılar gözükecek left'e bastığında klasik 1 den sonrası */}
-    <Link to={"second"}><BsFillArrowRightSquareFill  color="gray" className="cursor-pointer float-right mr-16" size={40}/></Link>
-    {/* <BsFillArrowLeftSquareFill   color="gray" className="float-right mr-2" size={40}/> */}
-      <div className={style.container} style={{ maxHeight: "80vh" }}>
+        <div>
+        <NavBar />
+    <Link to={"/"}><BsFillArrowLeftSquareFill  color="gray" className="cursor-pointer float-right mr-16" size={40} /></Link>
+        <div className={style.container} style={{ maxHeight: "80vh" }}>
         <div className={style.row}>
           <div className={style.col}>
             <div className={style.tableBorder}>
@@ -191,27 +190,7 @@ function ScoreBoard() {
                       <td className={style.tdIndex}>
                         <div className="2xl:text-8xl xl:text-5xl">
                           <div className="m-auto">
-                            {index === 0 ? (
-                              <GiTrophyCup
-                                size={100}
-                                className="m-auto"
-                                color="#FFD700"
-                              />
-                            ) : index === 1 ? (
-                              <GiTrophyCup
-                                size={100}
-                                className="m-auto"
-                                color="#C0C0C0"
-                              />
-                            ) : index === 2 ? (
-                              <GiTrophyCup
-                                size={100}
-                                className="m-auto"
-                                color="#CD7F32"
-                              />
-                            ) : (
-                              index + 1
-                            )}
+                            { index + 6}
                           </div>
                         </div>
                       </td>
@@ -247,51 +226,51 @@ function ScoreBoard() {
           </div>
         </div>
       </div>
-      <Modal
-        onHide={closeDelete}
-        show={deleteClick}
-        centered
-        dialogClassName="modal-position modal-wide"
-      >
-        <Modal.Header>
-          <Modal.Title>Kullanıcıyı Kaldır</Modal.Title>
-        </Modal.Header>
-        <Modal.Body onClick={closeDelete} className="d-flex justify-between">
-          <Button>İptal Et</Button>
-          <Button onClick={() => deleteUser(deletePlayerId)} variant="danger">
-            Kaldır
-          </Button>
-        </Modal.Body>
-      </Modal>
-      <Modal
-  show={timer}
-  onHide={closeTimer}
-  centered
-  dialogClassName="modal-position modal-wide"
-  size="xl"
-  backdrop="static" // Modal dışında tıklama işlemini iptal et
->
-  <Modal.Header closeButton={true}> {/* Çarpıyı gizlemek */}
-    <Modal.Title className="text-6xl">Kronometre</Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-    <div className="text-center text-9xl">{formatTime(time)}</div>
-  </Modal.Body>
-  <Modal.Footer className="flex justify-between">
-    {!showButton && (
-      <Button className="w-25" onClick={startTimer} variant="success">
-        Başlat
-      </Button>
-    )}
-    {showButton && (
-      <Button className="w-25" onClick={stopTimer} variant="danger">
-        Dur
-      </Button>
-    )}
-  </Modal.Footer>
-</Modal>
-
+    </div>
+     <Modal
+     onHide={closeDelete}
+     show={deleteClick}
+     centered
+     dialogClassName="modal-position modal-wide"
+   >
+     <Modal.Header>
+       <Modal.Title>Kullanıcıyı Kaldır</Modal.Title>
+     </Modal.Header>
+     <Modal.Body onClick={closeDelete} className="d-flex justify-between">
+       <Button>İptal Et</Button>
+       <Button onClick={() => deleteUser(deletePlayerId)} variant="danger">
+         Kaldır
+       </Button>
+     </Modal.Body>
+   </Modal>
+   <Modal
+     show={timer}
+     onHide={closeTimer}
+     centered
+     dialogClassName="modal-position modal-wide"
+     size="xl"
+   >
+     <Modal.Header closeButton>
+       <Modal.Title className="text-6xl">Kronometre</Modal.Title>
+     </Modal.Header>
+     <Modal.Body>
+     <div className="text-center text-9xl">{formatTime(time)}</div>
+   </Modal.Body>
+   <Modal.Footer className="flex justify-between">
+     {!showButton && (
+       <Button className="w-25" onClick={startTimer} variant="success">
+         Başlat
+       </Button>
+     )}
+     {showButton && (
+       <Button className="w-25" onClick={stopTimer} variant="danger">
+         Dur
+       </Button>
+     )}
+   </Modal.Footer>
+   </Modal>
     </>
-  );
+  )
 }
-export default ScoreBoard;
+
+export default SecondPage

@@ -1,12 +1,15 @@
-import NavBar from "./components/NavBar";
-import ScoreBoard from "./components/ScoreBoard";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./components/Home";
+import SecondPage from "./components/SecondPage";
 
 function App() {
   return (
-    <div className="h-screen">
-      <NavBar />
-      <ScoreBoard />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route index element={<Home />}/>
+        <Route  path="/second" element={<SecondPage />}/>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
