@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { MdDelete, MdTimer } from "react-icons/md";
-import { Modal } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import {
   collection,
   deleteDoc,
   doc,
   onSnapshot,
   query,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
-import Timer from "./Timer";
 import { GiTrophyCup } from "react-icons/gi";
+import { BsFillArrowLeftSquareFill, BsFillArrowRightSquareFill } from "react-icons/bs";
 
+
+// Style
 const style = {
   th: `px-6 py-3 2xl:text-xl lg:text-xs font-bold text-center text-gray-500 uppercase`,
   container: `flex h-screen flex-col mt-5`,
@@ -26,19 +29,79 @@ const style = {
   iconDiv: `px-6 py-4 text-center mx-auto`,
 };
 
+// Component
 function ScoreBoard() {
+
+  // Hooks
   const [users, setUsers] = useState([]);
   const [timer, setTimer] = useState(false);
   const [selectedPlayerIndex, setSelectedPlayerIndex] = useState(null); // Seçili oyuncunun indexini tutacak state
+  const [deleteClick, setDeleteClick] = useState(false);
+  const [deletePlayerId, setDeletePlayerId] = useState(null); // Silinecek oyuncunun ID'sini tutacak state
+
+  const [time, setTime] = useState(0);
+  const [timerId, setTimerId] = useState(null);
+  const [showButton, setShowButton] = useState(false);
+
+
+  // Functions
+  const startTimer = () => {
+    if (timerId) return;
+    const id = setInterval(() => {
+      setTime((prevTime) => prevTime + 10);
+    }, 10);
+    setTimerId(id);
+    setShowButton(true);
+  };
+
+  const stopTimer = async () => {
+    if (!timerId) return;
+    clearInterval(timerId);
+    setTimerId(null);
+    setShowButton(false);
+    setTimer(false);
+  
+    // Firestore'da kullanıcının skorunu güncelle
+    const userId = users[selectedPlayerIndex]?.id;
+    await updateScore(userId, time);
+  
+    setTime(0); // Skoru sıfırla
+  };  const updateScore = async (userId, newScore) => {
+    try {
+      const userDoc = doc(collection(db, "users"), userId);
+      await updateDoc(userDoc, {
+        score: newScore,
+      });
+      //   console.log('Skor güncellendi.');
+    } catch (error) {
+      //   console.error('Skor güncellenirken bir hata oluştu:', error);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (timerId) {
+        clearInterval(timerId);
+      }
+    };
+  }, [timerId]);
+
 
   // Elemanları silmeye yarayan fonksiyon.
   const deleteUser = async (id) => {
     try {
       await deleteDoc(doc(db, "users", id));
       // console.log("deleted player");
+      setDeleteClick(false); // Kaldırma işleminden sonra modalı kapat
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleDelete = (index) => {
+    setSelectedPlayerIndex(index);
+    setDeletePlayerId(users[index]?.id);
+    setDeleteClick(true);
   };
 
   // firebase'de ki users koleksiyonumu kontrol eder bir değişiklik olduğunda ise tekrardan listeler.
@@ -60,6 +123,10 @@ function ScoreBoard() {
     setTimer(false);
   };
 
+  const closeDelete = () => {
+    setDeleteClick(false);
+  };
+
   const handleTimer = (index) => {
     setSelectedPlayerIndex(index); // Benzersiz id'yi seçili oyuncu indexi yerine kullan
     setTimer(true);
@@ -75,8 +142,14 @@ function ScoreBoard() {
     return `${formattedMinutes}:${formattedSeconds}.${formattedMilliseconds}`;
   };
 
+  
+
   return (
     <>
+    {/* Bunlara basarak sayfayı yenilemeden sadce tabloyu yenileyecek. */}
+    {/* rightarrow a basıldığında ekranda 5 ten sonra ki kullanıcılar gözükecek left'e bastığında klasik 1 den sonrası */}
+    <BsFillArrowRightSquareFill  color="gray" className="cursor-pointer float-right mr-16" size={40}/>
+    <BsFillArrowLeftSquareFill   color="gray" className="float-right mr-2" size={40}/>
       <div className={style.container} style={{ maxHeight: "80vh" }}>
         <div className={style.row}>
           <div className={style.col}>
@@ -103,8 +176,15 @@ function ScoreBoard() {
                 </thead>
                 <tbody className={style.tbody}>
                   {users.map((e, index) => (
-                    <tr className={index % 2 === 1 ? "bg-gradient-to-bl from-white to-blue-400" : ""} key={index}>
-                      {/* className={index === 0 ? "bg-gold" : (index === 1 ? "bg-silver" : (index === 2 ? "bg-bronze" : ""))} */}
+                    <tr
+                      className={
+                        index % 2 === 1
+                          ? "bg-gradient-to-bl from-white to-blue-400"
+                          : ""
+                      }
+                      key={index}
+                    >
+                      {/* className={index === 0 ? "bg-gold" : (index === 1 ? "bg-silver" : (index === 2 ? "bg-bronze" : "")) */}
                       {/* İlk üç kişiye kupa iconu koydum. Gold-Silver-Bronze */}
                       <td className={style.tdIndex}>
                         <div className="2xl:text-8xl xl:text-5xl">
@@ -140,7 +220,7 @@ function ScoreBoard() {
                       <td className={style.tdIcon}>
                         <div className={style.iconDiv}>
                           <MdTimer
-                            onClick={() => handleTimer(e.id)}
+                            onClick={() => handleTimer(index)}
                             color="green"
                             size={70}
                             className="cursor-pointer m-auto"
@@ -150,7 +230,7 @@ function ScoreBoard() {
                       <td className={style.tdIcon}>
                         <div className={style.iconDiv}>
                           <MdDelete
-                            onClick={() => deleteUser(e.id)}
+                            onClick={() => handleDelete(index)}
                             color="#ff0000"
                             size={70}
                             className="cursor-pointer m-auto"
@@ -166,6 +246,22 @@ function ScoreBoard() {
         </div>
       </div>
       <Modal
+        onHide={closeDelete}
+        show={deleteClick}
+        centered
+        dialogClassName="modal-position modal-wide"
+      >
+        <Modal.Header>
+          <Modal.Title>Kullanıcıyı Kaldır</Modal.Title>
+        </Modal.Header>
+        <Modal.Body onClick={closeDelete} className="d-flex justify-between">
+          <Button>İptal Et</Button>
+          <Button onClick={() => deleteUser(deletePlayerId)} variant="danger">
+            Kaldır
+          </Button>
+        </Modal.Body>
+      </Modal>
+      <Modal
         show={timer}
         onHide={closeTimer}
         centered
@@ -175,10 +271,23 @@ function ScoreBoard() {
         <Modal.Header closeButton>
           <Modal.Title className="text-6xl">Kronometre</Modal.Title>
         </Modal.Header>
-        {timer && <Timer index={selectedPlayerIndex} />}
+        <Modal.Body>
+        <div className="text-center text-9xl">{formatTime(time)}</div>
+      </Modal.Body>
+      <Modal.Footer className="flex justify-between">
+        {!showButton && (
+          <Button className="w-25" onClick={startTimer} variant="success">
+            Başlat
+          </Button>
+        )}
+        {showButton && (
+          <Button className="w-25" onClick={stopTimer} variant="danger">
+            Dur
+          </Button>
+        )}
+      </Modal.Footer>
       </Modal>
     </>
   );
 }
-
 export default ScoreBoard;
