@@ -43,6 +43,8 @@ function ScoreBoard() {
   const [showButton, setShowButton] = useState(false);
 
   // Functions
+
+  // Start and stop timer
   const startTimer = () => {
     if (timerId) return;
     const id = setInterval(() => {
@@ -129,6 +131,17 @@ function ScoreBoard() {
   const handleTimer = (index) => {
     setSelectedPlayerIndex(index); // Benzersiz id'yi seçili oyuncu indexi yerine kullan
     setTimer(true);
+  };
+
+
+  const cancelTimer = () => {
+    clearInterval(timerId); // Timer'ı durdur
+    setTimerId(null); // Timer ID'sini null yap
+    setShowButton(false); // Button'u gizle
+    setTimer(false); // Timer'ı iptal et
+  
+    // Diğer gerekli işlemleri yapabilirsiniz
+    setTime(0); // Zamanı sıfırla
   };
 
   const formatTime = (time) => {
@@ -272,7 +285,7 @@ function ScoreBoard() {
         size="xl"
         backdrop="static" // Modal dışında tıklama işlemini iptal et
       >
-        <Modal.Header closeButton={true}>
+        <Modal.Header closeButton={false}>
           {" "}
           {/* Çarpıyı gizlemek */}
           <Modal.Title className="text-6xl">Kronometre</Modal.Title>
@@ -280,7 +293,8 @@ function ScoreBoard() {
         <Modal.Body>
           <div className="text-center text-9xl">{formatTime(time)}</div>
         </Modal.Body>
-        <Modal.Footer className="flex justify-between">
+        <Modal.Footer className="flex justify-content-between">
+          <Button onClick={cancelTimer} className="w-25">İptal</Button>
           {!showButton && (
             <Button className="w-25" onClick={startTimer} variant="success">
               Başlat
