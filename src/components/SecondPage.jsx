@@ -128,16 +128,14 @@ function SecondPage() {
     setTimer(true);
   };
 
-
   const cancelTimer = () => {
     clearInterval(timerId); // Timer'ı durdur
     setTimerId(null); // Timer ID'sini null yap
     setShowButton(false); // Button'u gizle
     setTimer(false); // Timer'ı iptal et
-  
+
     setTime(0); // Zamanı sıfırla
   };
-
 
   const formatTime = (time) => {
     const milliseconds = time % 1000;
@@ -267,7 +265,9 @@ function SecondPage() {
           <div className="text-center text-9xl">{formatTime(time)}</div>
         </Modal.Body>
         <Modal.Footer className="flex justify-content-between">
-          <Button onClick={cancelTimer} className="w-25">İptal Et</Button>
+          <Button onClick={cancelTimer} className="w-25">
+            İptal Et
+          </Button>
           {!showButton && (
             <Button className="w-25" onClick={startTimer} variant="success">
               Başlat
