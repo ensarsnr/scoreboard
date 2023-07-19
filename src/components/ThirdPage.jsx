@@ -11,10 +11,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { Button, Modal } from "react-bootstrap";
-import {
-  BsFillArrowLeftSquareFill,
-  BsFillArrowRightSquareFill,
-} from "react-icons/bs";
+import { BsFillArrowLeftSquareFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 
 const style = {
@@ -31,7 +28,7 @@ const style = {
   iconDiv: `px-6 py-4 text-center mx-auto`,
 };
 
-function SecondPage() {
+function ThridPage() {
   // Hooks
   const [users, setUsers] = useState([]);
   const [timer, setTimer] = useState(false);
@@ -113,7 +110,7 @@ function SecondPage() {
         allUsers.push({ ...doc.data(), id: doc.id });
       });
       const sortedUsers = allUsers.sort((a, b) => b.score - a.score);
-      setUsers(sortedUsers.slice(5, 10)); // Sadece 5'ten sonraki oyuncuları al
+      setUsers(sortedUsers.slice(11));
     });
     return () => unsubscribe();
   }, []);
@@ -154,17 +151,10 @@ function SecondPage() {
     <>
       <div>
         <NavBar />
-        <Link to={"third"}>
-          <BsFillArrowRightSquareFill
-            color="gray"
-            className="cursor-pointer float-right mr-16"
-            size={40}
-          />
-        </Link>
-        <Link to={"/"}>
+        <Link to={"/second"}>
           <BsFillArrowLeftSquareFill
             color="gray"
-            className="cursor-pointer mr-5 float-right "
+            className="cursor-pointer float-right mr-16"
             size={40}
           />
         </Link>
@@ -196,7 +186,7 @@ function SecondPage() {
                     {users.map((e, index) => (
                       <tr
                         className={
-                          index % 2 === 1
+                          index % 2 === 0
                             ? "bg-gradient-to-bl from-white to-blue-400"
                             : ""
                         }
@@ -206,7 +196,7 @@ function SecondPage() {
                         {/* İlk üç kişiye kupa iconu koydum. Gold-Silver-Bronze */}
                         <td className={style.tdIndex}>
                           <div className="2xl:text-8xl xl:text-5xl">
-                            <div className="m-auto">{index + 6}</div>
+                            <div className="m-auto">{index + 11}</div>
                           </div>
                         </td>
                         <td className={style.td}>
@@ -294,4 +284,4 @@ function SecondPage() {
   );
 }
 
-export default SecondPage;
+export default ThridPage;

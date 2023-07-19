@@ -194,7 +194,7 @@ function ScoreBoard() {
                   {users.map((e, index) => (
                     <tr
                       className={
-                        index % 2 === 1
+                        index % 2 === 0
                           ? "bg-gradient-to-bl from-white to-blue-400"
                           : ""
                       }
@@ -209,13 +209,13 @@ function ScoreBoard() {
                               <GiTrophyCup
                                 size={100}
                                 className="m-auto"
-                                color="#FFD700"
+                                color="gold"
                               />
                             ) : index === 1 ? (
                               <GiTrophyCup
                                 size={100}
                                 className="m-auto"
-                                color="#C0C0C0"
+                                color="#aeb0ae"
                               />
                             ) : index === 2 ? (
                               <GiTrophyCup
